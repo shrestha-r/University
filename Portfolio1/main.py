@@ -1,13 +1,13 @@
 import os
 import time
-login_username = ''
-login_pin = 0
-first_name = ''
-last_name = ''
-dob = 0
+first_name = 'rahul'
+last_name = 'shrestha'
+dob = 30122004
 phone_number = 0
 email = ''
 country_code = 0
+login_username = 'rahul'
+login_pin = 6373
 
 print(first_name, "Welcome to Monzo Bank")
 haveAccount = input("Do you have Bank Account?(y/n)")
