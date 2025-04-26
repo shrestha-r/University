@@ -1,0 +1,2 @@
+product_id  	| product_name   	| product_category	|  production_date	|  expire_date    	|  number_of_stocks 	|  supplier          	|  price  	|  shelf_location   	|  barcode      
+5400CD101   	| Coca Cola      	| Cold Drink     	|  20-04-2025     	|  25-04-2025     	|  100              	|  Tesco Warehouse   	|  1.5    	|  Aisle 1, Shelf B 	|  1234567890123
