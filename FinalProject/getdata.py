@@ -1,4 +1,4 @@
-def get_data(data_type='c'):
+def get_data(data_type=''):
     admin_list = []
     customer_list = []
     transaction_list = []
@@ -19,8 +19,10 @@ def get_data(data_type='c'):
         return admin_list
     elif data_type == 'c':
         return customer_list
-    else:
+    elif data_type == 'c':
         return transaction_list
+    else:
+        return all_data
 
 
 print(len(get_data('t')))

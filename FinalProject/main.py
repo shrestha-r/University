@@ -127,7 +127,13 @@ def admin_main(loged_user):
         main()
     else:
         print("Choose right option please.")
-def customer_main(loged_cutomer):
+def customer_main(loged_customer):
+    print("Hello, ", str(loged_customer[1]).capitalize())
+    print(f"Welcome to HDMS, Manage your | {loged_customer[8].upper()} | Account.")
+    print()
+    print("------------------------------------")
+    print(f"\tYOU HAVE: £{loged_customer[9]}")
+    print("------------------------------------")
     print("Choose your option: ")
     print("1. Check account details and update")
     print("2. Transaction history")
@@ -137,7 +143,36 @@ def customer_main(loged_cutomer):
     print("6. Logout")
     option = input(">>> ")
     if option == 1:
+        print("\tYour Personal Details: ")
+        print("-----------------------------------------------------------------")
+        print(f"\tAdmin Id: {loged_customer[0]}\t| customer Type: Admin")
+        print(f"\tFirst Name: {str(loged_customer[1]).capitalize()}\t| LastName: {str(loged_customer[2]).capitalize()}")
+        print(f"\tDate of Birth: {loged_customer[3]} E_mail: {loged_customer[4]}")
+        print(f"\tUsername: {str(loged_customer[5])}\t| Password: {loged_customer[6]}")
+        print(f"\Account Number: {loged_customer[7]}\t| Account Type: {loged_customer[8]}")
+        print("-----------------------------------------------------------------")
+        input == input("Do you want to update?(y/n) ")
+        if input == 'y':
+            print("Update your Details ")
+        else:
+            print("Go to main")
+
+    elif option == 2:
+        format_str = "{:^10}\t| {:^10}\t| {:^10}\t| {:^15}\t| {:^15}\t| {:^10}\t| {:^10}\t| {:^15}\t| {:^10}\t| {:^10}"
+        print("____________________________________________________________________________________________________________________________________________________________")
+
+        data_fields = ['Transaction ID', 'Account Number', 'Transaction Date', 'Amount', 'E_mail', 'Username', 'Password', 'Account Number', 'Account Type', 'Balance']
+        print("____________________________________________________________________________________________________________________________________________________________")
+
+        print(format_str.format(*data_fields))
+        for i in get_data('t'):
+            print(format_str.format(*i))
+            print("____________________________________________________________________________________________________________________________________________________________")
+            
+    elif option == 3:
         pass
+    else:
+        main()
 
 # code will run from here .... 
 def main():
@@ -193,4 +228,7 @@ def main():
             exit()
         else:
             print("Please Enter 1 or 2.")
-main()
+ 
+
+if __name__ == "__main__":
+    main()
