@@ -19,11 +19,18 @@ def get_data(data_type=''):
         return admin_list
     elif data_type == 'c':
         return customer_list
-    elif data_type == 'c':
+    elif data_type == 't':
         return transaction_list
     else:
         return all_data
 
 
-print(len(get_data('t')))
-print(get_data('t'))
+# print(len(get_data('t')))
+# print(get_data('t'))
+# print(get_data('t'))
+# print(get_data('t'))
+
+db = open('db.txt','r')
+db = db.read()
+print(db.split(';'))
+print(len(db))

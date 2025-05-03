@@ -1,0 +1,4 @@
+1, Naruto, 8.4, Masashi Kishimoto, 2002, 23, Action Adventure Comedy Martial Arts Shounen Superpower, 220, Oct 3 2002 to Feb 8 2007, False, Studio Pierrot
+2, One Piece, 9.0, Eichiro Oda, 1999, 23, Action Adventure Comedy Drama Fantasy Shounen Superpower, 1125, Oct 20 1999 to ?, True, Toei Animation
+3, Black Clover, 8.2, Yuki Tabata, 2017, 23, Action Adventure Comedy Drama Fantasy Shounen Superpower, 170, Oct 3 2017 to Mar 30 2021, False, Studio Pierrot
+4, Death Note, 8.9, Tsugumi Ohba / Takeshi Obata, 2006, 23, Mystery Shounen Supernatural Police Psychological Thriller, 37, Oct 4 2006 to Jun 27 2007, False, Mad House
