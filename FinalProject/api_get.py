@@ -1,4 +1,4 @@
-def get_API(filename='db.txt'):
+def get_API(record_type='all',filename='db.txt'):
     sample_db = {
         "admins": {},
         "customers": {},
@@ -11,9 +11,10 @@ def get_API(filename='db.txt'):
                 line = line.strip()
                 if not line:
                     continue
-                parts = line.split(';')
+                parts = line.split(';') # I will remove '\n' from the line
                 record_type = parts[0]
                 data = parts[1].split('|')
+                print(data)
                 
                 if record_type == 'admin':
                     try:
@@ -27,7 +28,7 @@ def get_API(filename='db.txt'):
                             "is_superuser": bool(int(data[6]))
                         }
                     except (IndexError, ValueError) as e:
-                        print(f"Error parsing admin record: {data} ({e})")
+                        print(f"Error with admin record: {data} ({e})")
                 elif record_type == 'customer':
                     try:
                         customer_id = int(data[0])
@@ -44,25 +45,33 @@ def get_API(filename='db.txt'):
                             "is_active": bool(int(data[10]))
                         }
                     except (IndexError, ValueError) as e:
-                        print(f"Error parsing customer record: {data} ({e})")
+                        print(f"Error with customer record: {data} ({e})")
                 elif record_type == 'transaction':
                     try:
                         transaction_id = int(data[0])
                         sample_db["transactions"][transaction_id] = {
                             "account_number": int(data[1]),
                             "transaction_type": data[2],
-                            "date": data[3],  # as string; parse if needed
+                            "date": data[3],
                             "amount": float(data[4]),
                             "balance_after": float(data[5])
                         }
                     except (IndexError, ValueError) as e:
-                        print(f"Error parsing transaction record: {data} ({e})")
+                        print(f"Error with transaction record: {data} ({e})")
     except FileNotFoundError:
         print(f"File {filename} not found.")
     except Exception as e:
         print(f"An error occurred: {e}")
-    return sample_db
+    if record_type == 'c':
+        return sample_db['customers']
+    elif record_type == 'a':
+        return sample_db["admins"]
+    elif record_type == 't':
+        return sample_db["transactions"]
+    else:
+        return sample_db
 db = get_API()
+print(db)
 import datetime
 
 

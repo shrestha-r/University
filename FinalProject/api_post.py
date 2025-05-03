@@ -158,30 +158,17 @@ sample_db = {
         }
     }
 }
-new = {5007:{
-            'account_number': 45678901,
-            'transaction_type': 'deposite',
-            'date': datetime.date(2025, 4, 20),
-            'amount': 3000.0,
-            'balance_after': 3100.0
-        }}
-print(sample_db['customers'])
-sample_db['transactions'].update(new)
-print(len(sample_db['customers']))
 
 
 
 def post_API(sample_db, filename="db.txt"):
     with open(filename, 'w') as f:
-        # Write admins with is_superuser as int
         for admin_id, admin in sample_db['admins'].items():
             line = (
                 f"admin;{admin_id}|{admin['first_name']}|{admin['last_name']}|"
                 f"{admin['email']}|{admin['username']}|{admin['password']}|{int(admin['is_superuser'])}\n"
             )
             f.write(line)
-
-        # Write customers with is_active as int
         for customer_id, customer in sample_db['customers'].items():
             line = (
                 f"customer;{customer_id}|{customer['first_name']}|{customer['last_name']}|{customer['dob']}|"
@@ -189,8 +176,6 @@ def post_API(sample_db, filename="db.txt"):
                 f"{customer['account_type']}|{customer['balance']:.2f}|{int(customer['is_active'])}\n"
             )
             f.write(line)
-
-        # Write transactions (no boolean fields)
         for trans_id, trans in sample_db['transactions'].items():
             line = (
                 f"transaction;{trans_id}|{trans['account_number']}|{trans['transaction_type']}|"
@@ -200,4 +185,6 @@ def post_API(sample_db, filename="db.txt"):
     return get_API()
 
 
-print(post_API(sample_db))
+# print(post_API(sample_db))
+
+print(sample_db['admins'])

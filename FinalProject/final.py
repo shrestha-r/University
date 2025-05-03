@@ -30,8 +30,14 @@ except FileNotFoundError:
     with open("db.txt", "w") as f:
         f.write(sample_data)
 
-account_types = ["Savings Account", "Current Account"]
-
+def id_input():
+    while True:
+        try:
+            id = int(input("Enter ID: "))
+            break
+        except (ValueError,TypeError):
+            print("Please enter correct ID.")
+    return id
 def post_API(sample_db, filename="db.txt"):
     with open(filename, 'w') as f:
         # Write admins
@@ -58,29 +64,7 @@ def post_API(sample_db, filename="db.txt"):
             f.write(line)
     return get_API()
 
-def get_data(data_type='c'):
-    admin_list = []
-    customer_list = []
-    transaction_list = []
-    with open('db.txt','r') as db:
-        all_data = db.readlines()
-    for line_data in all_data:
-        db_type = line_data.split(';')[0]
-        data = line_data.split(';')[1].split("|")
-        if db_type == 'admin':
-            admin_list.append(data)
-        elif db_type == 'customer':
-            customer_list.append(data)
-        else:
-            transaction_list.append(data)
-    if data_type == 'a':
-        return admin_list
-    elif data_type == 'c':
-        return customer_list
-    else:
-        return transaction_list
-
-def get_API(filename='db.txt'):
+def get_API(record_type='all',filename='db.txt'):
     sample_db = {
         "admins": {},
         "customers": {},
@@ -108,14 +92,14 @@ def get_API(filename='db.txt'):
                             "is_superuser": bool(int(data[6]))
                         }
                     except (IndexError, ValueError) as e:
-                        print(f"Error parsing admin record: {data} ({e})")
+                        print(f"Error with admin record: {data} ({e})")
                 elif record_type == 'customer':
                     try:
                         customer_id = int(data[0])
                         sample_db["customers"][customer_id] = {
                             "first_name": data[1],
                             "last_name": data[2],
-                            "dob": data[3],
+                            "dob": data[3],  # as string; parse if needed
                             "email": data[4],
                             "username": data[5],
                             "password": data[6],
@@ -125,7 +109,7 @@ def get_API(filename='db.txt'):
                             "is_active": bool(int(data[10]))
                         }
                     except (IndexError, ValueError) as e:
-                        print(f"Error parsing customer record: {data} ({e})")
+                        print(f"Error with customer record: {data} ({e})")
                 elif record_type == 'transaction':
                     try:
                         transaction_id = int(data[0])
@@ -137,22 +121,31 @@ def get_API(filename='db.txt'):
                             "balance_after": float(data[5])
                         }
                     except (IndexError, ValueError) as e:
-                        print(f"Error parsing transaction record: {data} ({e})")
+                        print(f"Error with transaction record: {data} ({e})")
     except FileNotFoundError:
         print(f"File {filename} not found.")
     except Exception as e:
         print(f"An error occurred: {e}")
-    return sample_db
+    if record_type == 'c':
+        print(sample_db['customers'])
+        return sample_db['customers']
+    elif record_type == 'a':
+        return sample_db["admins"]
+    elif record_type == 't':
+        return sample_db["transactions"]
+    else:
+        return sample_db
+database = get_API('db.txt')
 
-def input_account_type():
+def input_choices(choices):
     print("Choose your account type:")
-    for idx, acc_type in enumerate(account_types, 1):
-        print(f"\t{idx}. {acc_type}")
+    for idx, choice in enumerate(choices, 1):
+        print(f"\t{idx}. {choice}")
     while True:
-        choice = input(">>>(1/2): ").strip()
-        if choice in {'1', '2'}:
-            return "savings" if choice == '1' else "current"
-        print("Invalid choice. Please enter 1 or 2.")
+        choice = input(f">>>1-{len(choices)}: ").strip()
+        if choice in [str(i) for i in range(1,len(choices)+1)]:
+            return choices[int(choice)-1]
+        print(f"Invalid choice. Please number between 1 to {len(choices)}")
 
 def customer_inputs():
     sample_db = get_API()
@@ -170,7 +163,7 @@ def customer_inputs():
     customer_data['email'] = input("Email: ").strip().lower()
     customer_data['username'] = input("Username: ").strip()
     customer_data['password'] = input("Password: ").strip()
-    customer_data['account_type'] = input_account_type()
+    customer_data['account_type'] = input_choices(["savings","current"])
     while True:
         try:
             balance = float(input("Initial Balance: "))
@@ -204,12 +197,12 @@ def register_customer():
     db['customers'].update(new_customer)
     return post_API(db)
 
-def admin_main(loged_user):
+def admin_main(id,record):
     print("Your menu: ")
     print("1. See Login Details ")
     print("2. list all customers ")
     print("3. remove a customer")
-    print("4. add admin")
+    print("4. search for records")
     print("5. Logout")
     try:
         option = int(input(">>> "))
@@ -218,10 +211,11 @@ def admin_main(loged_user):
         return
     if option == 1:
         print("\tYour Personal Details: ")
-        print("\tAdmin Id: ", loged_user[0], "\t\t| User Type: Admin")
-        print("\tFirst Name: ", str(loged_user[1]).capitalize(), "\t| LastName:", str(loged_user[2]).capitalize())
-        print("\tE-mail: ", loged_user[3])
-        print("\tUsername: ", str(loged_user[4]), "\t| Password: ", str(loged_user[5]).removesuffix('\n'))
+        print("\tAdmin Id: ", id, "\t\t| User Type: Admin")
+        print("\tFirst Name: ", str(record["firstname"]).capitalize(), "\t| LastName:", str(record["lastname"]).capitalize())
+        print("\tE-mail: ", record["email"])
+        print("\tUsername: ", str(record["username"]), "\t| Password: ", str(record["password"]))
+        print("\tis_superuser: ",bool(record["is_superuser"]))
     elif option == 2:
         print('1. See Customers')
         print('2. See Transactions')
@@ -247,10 +241,16 @@ def admin_main(loged_user):
                 print(format_str.format(*i))
             print("-"*150)
     elif option == 3:
-        pass
+        print("Remove a Customer")
+        id = id_input()
+        db = get_API()
+        if id in db['customers'].keys():
+            db["customers"].pop(id)
+            post_API(db)
+            print(f"Record with id {id} has been removed from database.")
+        else:
+            print(f"Data with id {id} not found!")
     elif option == 4:
-        pass
-    elif option == 5:
         main()
     else:
         print("Choose right option please.")
@@ -265,10 +265,9 @@ def customer_main(loged_customer):
     print("Choose your option: ")
     print("1. Check account details and update")
     print("2. Transaction history")
-    print("3. All Accounts")
-    print("4. Login Details and update")
-    print("5. Make transactions")
-    print("6. Logout")
+    print("3. Login Details and update")
+    print("4. Make transactions")
+    print("5. Logout")
     option = input(">>> ")
     if option == '1':
         print("\tYour Personal Details: ")
@@ -323,25 +322,26 @@ def main():
             print("Hello Customer, nice to see you. ")
             username = input("Username: ")
             password = input("Password: ")
-            customer_list = get_data('c')
-            for customer in customer_list:
-                if customer[5] == username and  customer[6] == password:
-                    print("You are good to go.")
-                    customer_main(customer)
-                    break
+            customers = get_API('c')
+            print(customers.keys())
+            for id, record in customers.items():
+                if record["username"] == username:
+                    admin_main(id,record)
             else:
                 print("User not found.")
         elif option == 2:
             register_customer()
+            main()
     elif sign == 2:
         print("How are you admin? Login to your account.")
         username = input("Username: ")
         password = input("Password: ")
-        admin_list = get_data('a')
-        for admin in admin_list:
-            if admin[4] == username and  str(admin[5]).removesuffix('\n') == password:
-                print("You are good to go.")
-                admin_main(admin)
+        admins = get_API('a')
+        print(admins.items())
+        for id, record in admins.items():
+            if record["username"] == username and record["is_superuser"] == 1:
+                # print(admins.items)
+                admin_main(id,record)
                 break
         else:
             print("User not found.")

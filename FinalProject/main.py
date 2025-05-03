@@ -235,8 +235,8 @@ def admin_main(loged_user):
     print("1. See Login Details ")
     print("2. list all customers ")
     print("3. remove a customer")
-    print("4. add admin")
-    print("5. Logout")
+    # print("4. add admin")
+    print("4. Logout")
     option = int(input(">>> "))
     if option == 1:
         print("\tYour Personal Details: ")
